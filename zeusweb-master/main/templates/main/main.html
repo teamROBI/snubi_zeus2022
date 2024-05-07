@@ -1,0 +1,212 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/card.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/parallax.css' %}">
+{% endblock %}
+
+{% block title %}
+<title>SNUBI MART</title>
+{% endblock %}
+
+
+{% block main %}
+
+<!-- banner 화면(detectron) -->
+<div id = "zeus_page">
+    <header>
+        <nav class="blue darken-3 z-depth-1"> <!-- 색상 변경 -->
+            <div id = "banner" class="nav-wrapper container">
+                <a href="/" class="brand-logo">SNUBI MART</a>
+            </div>
+        </nav>
+    </header>
+
+<!-- 2번 화면 -->
+{% if page == 2 %}
+<div class="center">
+    {% if user == 1 %}
+    <!-- 김준오 -->
+    <img src="{% static 'main/img/animation_hi_juno.gif' %}" style="margin-top: 40pt; width: 1000px; height: 580px"> <br>
+    {% elif user == 2 %}
+    <!-- 박예솔 -->
+    <img src="{% static 'main/img/animation_hi_yesol.gif' %}" style="margin-top: 40pt; width: 1000px; height: 580px"> <br>
+    {% elif user == 3 %}
+    <!-- 마스크 -->
+    <img src="{% static 'main/img/animation_hi_jinsoo.gif' %}" style="margin-top: 40pt; width: 1000px; height: 580px"> <br>
+
+    {% else %}'
+    <img src="{% static 'main/img/animation_hi_gogaek.gif' %}" style="margin-top: 40pt; width: 1000px; height: 580px"> <br>
+    {% endif %}
+<!--  <img src="{% static 'main/img/0pagere.gif' %}"  style = "width:1000px; height:580px; margin-top: 40pt"> <br>-->
+  <!-- 3번 화면으로 이동하는 버튼 -->
+  <form method="POST">
+    {% csrf_token %}
+    <button id="move_page2" name="move_page" value="3" style="border : 0; outline : 0; margin-top: 15pt; background-color: transparent; color: white" type="submit" >Detectron Page</button>
+  </form>
+</div>
+
+<!-- 3번 화면 -->
+{% elif page == 3 %}
+<div class="row" style="margin-left:50px; margin-right:50px; margin-top:10px;height:400px">
+    <div style="width:49%; height: 600px; float:left">
+        <p><h5><b>구매하실 물건</b></h5></p>
+        <div style="width:100%; height: 90%; float:left">
+        <div id="scroll_div" style="overflow:auto; max-height: 100%; display: flex; flex-direction: column-reverse;">
+            <table class="col-md-15" id="star_table" style = "width:100%; border:0; cellspacing:0; cellpadding:0">
+                <tr class="text-center">
+                    <th>번호</th>
+                    <th>이름</th>
+                    <th>개수</th>
+                    <th>가격</th>
+                </tr>
+                {% for product in products %}
+                {% if product.3 == 11 %} <!-- MILK_CLASS_NUM = 14 -->
+                <tr class="text-center" style = "color: red ; text-decoration: line-through;">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{product.0}}</td>
+                    <td>{{product.1}}</td>
+                    <td>{{product.2}}</td>
+                </tr>
+                {% else %}
+                <tr class="text-center">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{product.0}}</td>
+                    <td>{{product.1}}</td>
+                    <td>{{product.2}}</td>
+                </tr>
+                {% endif %}
+
+                {% endfor %}
+            </table>
+        </div>
+        </div>
+    </div>
+
+    <div style="width:49%; height: 600px; float:right;">
+        <table class="col-md-15" id="star_table2" style = "width:100%;">
+            <tr class="text-center"><p><h5><b>계산대의 물건을 확인하세요! {{name}}</b></h5></p></tr><br>
+            <tr>
+                <td>
+                    <img src="http://127.0.0.1:8000/camera" style="width: 620px; height: 480px"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="width:49%; float:left; margin-left: 40px">
+    <p><h4>총액: {{total}}</h4></p>
+</div>
+<form method="POST" style="float:left">
+    {% csrf_token %}
+    <button id="move_page3" name="move_page" value="4" style="border : 0; outline : 0; margin-top: 15pt; background-color: transparent; color: white" type="submit">장바구니 결제</button>
+</form>
+
+<!-- 4번 화면 -->
+{% elif page == 4 %}
+<div class="row" style="margin-left:50px; margin-right:50px; margin-top:10px; overflow:hidden;">
+  <div class="center" style="width:69%; float:left;">
+    <img src="{% static 'main/img/animation_4thpage.gif' %}" style="margin-top: 70pt; width: 800px; height: 480px"> <br>
+  </div>
+  
+  <div style="width:29%; float:right;">
+      <div style="margin-top:100pt;">
+          <p><h3 style="color: darkblue"><b>결제 총액</b></h3></p>
+          <p><h4><b>{{total}}원</b></h4></p>
+          <div style="margin-top: 30pt; text-align: center">
+          <p><h6>▼ 고객님의 결제 정보를 확인하세요! ▼</h6></p>
+          </div>
+          {% if user == 1 %}
+          <!-- 김준오 -->
+          <img src="{% static 'main/img/lpay_card.jpg' %}" style="margin-top: 5pt; width: 360px; height: 225px"> <br>
+          {% elif user == 2 %}
+          <!-- 박예솔 -->
+          <img src="{% static 'main/img/kakao_card.jpg' %}" style="margin-top: 5pt; width: 360px; height: 225px"> <br>
+          {% else %}
+          <img src="{% static 'main/img/samsung_card.jpg' %}" style="margin-top: 5pt; width: 360px; height: 225px"> <br>
+          {% endif %}
+      </div>
+  </div>
+</div>
+<div class="center" style="margin-left:50px; margin-right:50px; margin-top:15px; overflow:hidden;">
+    <!-- 5번 화면으로 이동하는 버튼 -->
+  <form method="POST">
+    {% csrf_token %}
+    <button id="move_page4" name="move_page" value="5" style="border : 0; outline : 0; margin-top: 15pt; background-color: transparent; color: white" type="submit">GOOD BYE~</button>
+  </form>
+</div>
+
+<!-- 5번 화면 -->
+{% elif page == 5 %}
+<div class="center">
+  <img src="{% static 'main/img/animation_thankyou.gif' %}" style="margin-top: 40pt; width: 1000px; height: 580px"> <br>
+  <!-- 1번 화면으로 이동하는 버튼 -->
+  <form method="POST">
+    {% csrf_token %}
+    <button id="move_page5" name="move_page" value="1" style="border : 0; outline : 0; margin-top: 15pt; background-color: transparent; color: white" type="submit">처음화면</button>
+  </form>
+</div>
+
+<!-- 1번 화면 -->
+{% else %}
+<div class="row" style="margin-left:5px; margin-right:5px;margin-top:10px; overflow:hidden;">
+  <div class="left" style="width:49%; float:left;">
+    <img src="{% static 'main/img/animation_1page.gif' %}" style="margin-left: 30pt; margin-top: 5pt; width: 600px; height: 600px"> <br>
+  </div>
+
+ <div class="right" style="width:49%; float:right;">
+      <div style="margin-top:10pt;margin-right:50px;">
+         <table class="col-md-15" id="star_table3" style = "width:100%;">
+<!--            <tr class="text-center" style = "text-align: center"><p><h5><b> 얼굴을 가까이 와주세요!</b></h5></p></tr><br>-->
+            <div style = "margin-top: 50pt"></div>
+            <tr>
+                <td>
+                    <img src="http://127.0.0.1:8000/face" style="width: 620px; height: 480px"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</div>
+<div class = "center" style="margin-left: 500pt">
+    <form method="POST" style="float:left">
+        {% csrf_token %}
+        <button id="move_page1" name="move_page" value="2" style="border : 0; outline : 0; margin-top: 10pt; background-color: transparent; color: white" type="submit">Welcome Page</button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}
+</div>
+
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.modal').modal();
+        $('.parallax').parallax();
+    });
+</script>
+<script>
+    $('.move_page').val();
+    $(document).fromId.submit();
+</script>
+<script>
+    $(function() {
+    timer = setInterval( function () {
+        $.ajax ({
+            type: 'GET',
+            url : "http://127.0.0.1:8000",
+            cache : false,
+            success : function (response) {
+            $("#zeus_page").html(response);
+            }
+    
+        });
+        }, 1000);
+    });
+</script>
+{% endblock %}
